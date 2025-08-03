@@ -22,11 +22,22 @@
 // The setup function runs once when you press reset or power the board
 void setup() {
 
+//Setup a serial connection and configure he communication speed
+Serial.begin(9600);
+//Debug serial connection by prnting a confimation to the serial moniter
+Serial.print("Serial moniter is configured to 9600 baud rate");
 }
 
 // The loop function runs over and over again forever
 void loop() {
-
+Serial.print("Pin-A0:");
+Serial.print(analogRead(A0));
+Serial.print(",");
+Serial.print("Pin-A1:");
+Serial.print(analogRead(A1));
+Serial.print(",");
+Serial.print(analogRead(A2));
+Serial.println(analogRead(A2));
 }
 
 
