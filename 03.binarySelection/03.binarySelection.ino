@@ -31,11 +31,16 @@
     https://github.com/TempeHS/TempeHS_Ardunio_Bootcamp/blob/main/03.binarySelection/Readme.md
 
 */
+static unsigned int OnBoardLED = 13;
+static unsigned int LEDonPin8 = 8;
 
 void setup() {
-  
+Serial.begin(9600);
+pinMode(OnBoardLED, OUTPUT);
+pinMode(LEDonPin8, OUTPUT);
 }
 
 void loop() {
-  
+digitalWrite(OnBoardLED, HIGH);
+digitalWrite(LEDonPin8, HIGH);
 }
