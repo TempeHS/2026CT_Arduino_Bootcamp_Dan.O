@@ -20,13 +20,29 @@
     https://www.tinkercad.com/things/97wMDip2Ata-bootcamp-analogueread/editel
     https://github.com/TempeHS/TempeHS_Ardunio_Bootcamp/blob/main/05.analogueRead/Bootcamp-analogueRead.png
 */
-
+static unsigned int myVariableResistor = A0;
+unsigned int resistorValue;
+static unsigned int LED = 8;
+static unsigned int LED2 = 13;
 
 void setup() {
-  
+  Serial.begin(9600);
+  pinMode(LED, OUTPUT );
+  pinMode(LED2, OUTPUT );
+  //Analogue pis do not need to be configured unless you want to yse one as digital I/O
 }
 
 void loop() {
-  
+  Serial.print("myVariableResistor:");
+  resistorValue = analogRead(myVariableResistor);
+  Serial.println(resistorValue);
+
+  if (resistorValue >= 200 ){
+  digitalWrite(LED, HIGH);
+  digitalWrite(LED2, LOW);
+} else {
+    digitalWrite(LED2, HIGH);
+    digitalWrite(LED, LOW);
+  }
 }
 
