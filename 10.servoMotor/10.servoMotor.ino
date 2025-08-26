@@ -33,16 +33,24 @@
 Ultrasonic myUltraSonicSensor(5);
 
 unsigned static int servoPin = 6;
-
+unsigned static int usPin = 5;
 Servo myservo;
 
 int val;
 int potpin = A1;
 
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C OLED(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 
 void setup() {
   myservo.attach(servoPin);
   Serial.begin(9600);
+
+  OLED.begin();
+  OLED.setFont(u8g2_font_6x12_tf);
+  OLED.drawStr(0, 10, "LEBRON IS THE LE GOAT");
+  OLED.nextPage();
+  delay(3000);
+
 }
 
 void loop() {
@@ -53,7 +61,9 @@ void loop() {
   myservo.write(val);
   delay(15);
 
-  Serial.print(RangeInCentimeters);
-  Serial.println(" cm");
+  OLED.print(RangeInCentimeters);
+  OLED.println(" cm");
   delay(250);
+  
+  
 }
