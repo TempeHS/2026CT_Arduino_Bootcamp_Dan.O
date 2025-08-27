@@ -48,22 +48,32 @@ void setup() {
   OLED.begin();
   OLED.setFont(u8g2_font_6x12_tf);
   OLED.drawStr(0, 10, "LEBRON IS THE LE GOAT");
+  OLED.drawCircle(50, 50, 20);
   OLED.nextPage();
   delay(3000);
 
 }
 
 void loop() {
+  static String inputString = "";
+  static bool stringComplete = false;
 
-  unsigned long RangeInCentimeters;
-  RangeInCentimeters = myUltraSonicSensor.distanceRead();
-  val = map(RangeInCentimeters,0, 30, 0, 180);
-  myservo.write(val);
+  while(Serial.available()) {
+    char inChar = (char)Serial.read();
+    if( inChar == "\n") {
+      stringComplete = true;
+      break;
+    } else if (inChar != '/r'){
+      inputString += inChar;
+    }
+    OLED.drawChar("input")
+  }
+
+  unsigned long RangeInCentimeters = myUltraSonicSensor.distanceRead();
   delay(15);
 
-  OLED.print(RangeInCentimeters);
-  OLED.println(" cm");
+  Serial.print(RangeInCentimeters);
+  Serial.println(" cm");
   delay(250);
   
-  
-}
+}  
