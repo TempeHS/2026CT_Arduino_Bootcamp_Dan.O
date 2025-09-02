@@ -66,8 +66,32 @@ void loop() {
     } else if (inChar != '/r'){
       inputString += inChar;
     }
-    OLED.drawChar("input")
+  if(stringComplete == true) {
+      Serial.printIn(inputString)
+      OLED.clearBuffer();
+      OLED.drawStr(0, 10, "Serial Moniter");
+      OLED.drawStr(0, 20, "---------------------");
+      OLED.setCursor(0, 30);
+      OLED.print(inputString);
+    }
+
+    String inputString = "10 cm"
+    String cleanString = "";
+
+  for(unsigned int i = 0; i < inputString.length(); i++) {
+    char inChar = inputString[i];
+    if (inChar != '\n') && inChar != '\r'{
+      cleanString += inChar != '/r') {
+        cleanString += inChar;
+      }
+      if (inChar == '\n')
+        cleanString += '_'
+    }
   }
+
+  }
+  
+
 
   unsigned long RangeInCentimeters = myUltraSonicSensor.distanceRead();
   delay(15);
