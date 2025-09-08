@@ -30,11 +30,13 @@
 #include <Servo.h>
 
 #include "Ultrasonic.h"
-Ultrasonic myUltraSonicSensor(5);
+
 
 unsigned static int servoPin = 6;
 unsigned static int usPin = 5;
+unsigned static int ledPin = 3;
 Servo myservo;
+Ultrasonic myUltraSonicSensor(usPin);
 
 int val;
 int potpin = A1;
@@ -44,60 +46,35 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C OLED(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 void setup() {
   myservo.attach(servoPin);
   Serial.begin(9600);
-
+  pinMode(ledPin, OUTPUT);
+  Serial.println ("Baud 9600");
+  Serial.println("------------------");
   OLED.begin();
-  OLED.setFont(u8g2_font_6x12_tf);
-  OLED.drawStr(0, 10, "LEBRON IS THE LE GOAT");
-  OLED.drawCircle(50, 50, 20);
-  OLED.nextPage();
-  delay(3000);
 
 }
 
 void loop() {
-  static String inputString = "";
-  static bool stringComplete = false;
+  OLED.clearBuffer();
+  unsigned long range_in_cm = myUltraSonicSensor.distanceRead();
 
-  while(Serial.available()) {
-    char inChar = (char)Serial.read();
-    if( inChar == "\n") {
-      stringComplete = true;
-      break;
-    } else if (inChar != '/r'){
-      inputString += inChar;
-    }
-  if(stringComplete == true) {
-      Serial.printIn(inputString)
-      OLED.clearBuffer();
-      OLED.drawStr(0, 10, "Serial Moniter");
-      OLED.drawStr(0, 20, "---------------------");
-      OLED.setCursor(0, 30);
-      OLED.print(inputString);
-    }
-
-    String inputString = "10 cm"
-    String cleanString = "";
-
-  for(unsigned int i = 0; i < inputString.length(); i++) {
-    char inChar = inputString[i];
-    if (inChar != '\n') && inChar != '\r'{
-      cleanString += inChar != '/r') {
-        cleanString += inChar;
-      }
-      if (inChar == '\n')
-        cleanString += '_'
-    }
+if(range_in_cm <= 11) {
+    digitalWrite(ledPin, HIGH);
+    OLED.drawStr(0, 30, "On");
+  } else {
+    digitalWrite(ledPin, LOW);
+    OLED.drawStr(0, 30, "Off");
   }
 
-  }
+  String distanceString = String(range_in_cm);
+  int servoAngle = map(range_in_cm, 0, 10, 0, 180);
+  range_in_cm = map(range_in_cm, 0, 10, 0, 180);     
+  myservo.write(servoAngle);                  
+  String servoString = String(servoAngle);
+  OLED.setFont(u8g2_font_6x12_tf);
+  OLED.drawStr(0, 10, distanceString.c_str());
+  OLED.drawStr(0, 10, servoString.c_str());
+  Serial.println(range_in_cm);
+  OLED.nextPage();
   
-
-
-  unsigned long RangeInCentimeters = myUltraSonicSensor.distanceRead();
-  delay(15);
-
-  Serial.print(RangeInCentimeters);
-  Serial.println(" cm");
-  delay(250);
+}
   
-}  
