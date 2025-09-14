@@ -1,66 +1,70 @@
-/*
-  Author: 
 
-  Learning Intention:
-  The students will learn to break their code into reusable chunks called functions
-  
-  Success Criteria:
-    1. I understand how a function is called
-    2. I can break a simple program like LED blick into functions that I can be re-use
-    3. I know the computation term 'abstraction.'
-    4. I can create separate my functions into functions.ino files to make my code more manageable
-    5. I can return values from a function and use the value in my code
-    6. I can pass values into my functions to make them more secure
-    7. I know the computation term encapsulation
+// Arduino's pin connected to OUT pin of the sound sensor
+#define SENSOR_PIN 5
+#include <U8g2lib.h>
 
-  Student Notes:
-    
-  Documentation: 
-    https://www.youtube.com/watch?v=mHa1mUd1Kmg
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Initialize LCD
 
-  Schematic:
-      
-*/
 
-int LED_PIN = 13;
-bool LED_PIN_State = HIGH;
-int randomNum09;
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C OLED(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
+
+int lastState = HIGH;  // the previous state from the input pin
+int currentState;      // the current reading from the input pin
+
+const int soundPin = A0;
+
+int LED = 6;
+int maxVal = 0, minVal = 1023;
+
 
 void setup() {
-  // initialize digital pin with built in LED as output.
-  pinMode(LED_PIN, OUTPUT);
-  // inititise the serial monitor for debugging and output
-  Serial.begin(9600); 
-  randomSeed(analogRead(0));
+  // initialize serial communication at 9600 bits per second:
+  Serial.begin(9600);
+  // initialize the Arduino's pin as an input
+  pinMode(SENSOR_PIN, INPUT);
+  pinMode(LED, OUTPUT);
+  lcd.begin();
+  lcd.print("Sound Level:");
+    OLED.clearBuffer();
+  unsigned long range_in_cm = myUltraSonicSensor.distanceRead();
+
 }
 
 void loop() {
-  TogglePin(); //Call the TogglePin function
-  digitalWrite(LED_PIN, LED_PIN_State); //Set PIN state
-  DebugLED(); // Write PIN state to the serial monitor for debugging
-  MyDelayFunction(); //Call the MyDelayFunction
+  // read the state of the the input pin:
+  currentState = digitalRead(SENSOR_PIN);
+  
+  maxVal = 0;
+minVal = 1023;
 
-  generateRandomNumber();
-  Serial.println(randomNum09);
-  // take through to Serial.println(generateRandomNumber(0, 9)); and back 1 step
-
+// Measure peak-to-peak amplitude
+unsigned long startTime = millis();
+while (millis() - startTime < 50) {
+int val = analogRead(soundPin);
+if (val > maxVal) maxVal = val;
+if (val < minVal) minVal = val;
 }
 
-// A function that waits for a second (1000 milliseconds)
-void MyDelayFunction() {
-  delay(1000); 
+int amplitude = maxVal - minVal;
+float decibel = map(amplitude, 0, 1023, 30, 120); // Example mapping
+
+lcd.setCursor(0, 1);
+lcd.print("dB: ");
+lcd.print(decibel);
+
+
+
+  if (lastState == HIGH && currentState == LOW)
+    Serial.println("The sound has been detected");
+    digitalWrite(LED, HIGH);
+  if (lastState == LOW && currentState == HIGH)
+    Serial.println("The sound has disappeared");
+
+  // save the the last state
+  lastState = currentState;
 }
 
-// A Function that toggles a bool value true to false or false to true 
-void TogglePin() {
-  LED_PIN_State = !LED_PIN_State; 
-}
 
-void DebugLED() {
-  Serial.println("The LED connected to PIN " + String(LED_PIN) + " is " + String(LED_PIN_State));     // Print LED status to serial monitor
-}
 
-void generateRandomNumber () {
-  randomNum09 = random(0, 9);
-}
+
 
