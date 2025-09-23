@@ -23,7 +23,7 @@ Decibalms will be measured through the sound detecter
   - Tech that will be ysed 
   - Sound sensor
   - LED (will be flashing)
-  - OLED screen
+  - OLED screen 
 
 
 
