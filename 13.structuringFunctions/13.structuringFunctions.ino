@@ -5,9 +5,11 @@
 
 unsigned long previousMillis = 0;
 int lastState = HIGH;  // the previous state from the input pin
-int currentState;      // the current reading from the input pin
-const int soundPin = A1;
+int currentState = A1;     // the current reading from the input pin
+const int soundPin;
 int LED = 6;
+float referenceValue = 270.0; // Reference ADC value at a known dB level
+float referenceDb = 80.0; // Known dB level corresponding to the
 
 void setup() {
   // initialize serial communication at 9600 bits per second:
@@ -22,25 +24,7 @@ void loop() {
   unsigned long currentMillis = millis(); // Get current time in milliseconds
   // read the state of the the input pin:
   currentState = digitalRead(SENSOR_PIN);
-
-  if (lastState == HIGH && currentState == LOW)
-    Serial.println("The sound has been detected");
-    buzzerStandby();
-  else if (lastState == LOW && currentState == HIGH)
-    Serial.println("The sound has disappeared");
-    buzzerStandby()
-
-}
-
-  }
-
-
-void buzzerStandby() {
-  unsigned long currentMillis = millis();
-  if (currentMillis - prevoiseMillis >= beepInterval) {
-
-    previousMillis = currentMillis;
-  }
+    void measure();
 }
 
 
